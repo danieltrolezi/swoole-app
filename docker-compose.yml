@@ -1,0 +1,18 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - '8080:8080'
+    volumes:
+      - .:/app
+      - ./vendor:/app/vendor
+    working_dir: /app
+    networks:
+      - bridge
+
+networks:
+  bridge:
