@@ -20,7 +20,7 @@ RUN docker-php-ext-install pdo pdo_mysql pcntl
 RUN pecl install xdebug \
         redis
 
-RUN pecl install -D 'enable-sockets="no" enable-openssl="yes" enable-http2="yes" enable-mysqlnd="yes" enable-swoole-json="no" enable-swoole-curl="yes" enable-cares="yes"' swoole
+RUN printf "\n" | pecl install swoole
 
 RUN docker-php-ext-enable xdebug \
         redis \
