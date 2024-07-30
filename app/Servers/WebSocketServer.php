@@ -6,76 +6,189 @@ use Swoole\WebSocket\Server;
 
 class WebSocketServer
 {
-    private Server $server;
-    private array $rooms = [];
+    protected array $rooms = [];
 
     public function __construct()
     {
-        $this->server = new Server('0.0.0.0', 9090);
+        $this->startServer();
+    }
 
-        $this->server->set([
+    /**
+     * @return void
+     */
+    private function startServer(): void
+    {
+        $server = new Server('0.0.0.0', 9090);
+        $server->set($this->getConfig());
+        
+        $server->on('Open', function (Server $server, $request){
+            $this->onOpen($server, $request);
+        });
+        
+        $server->on('Close', function (Server $server, $request){
+            $this->onClose($server, $request);
+        });
+        
+        $server->on('Message', function (Server $server, $frame){
+            $this->onMessage($server, $frame);
+        });
+        
+        $server->start();
+    }
+
+    /**
+     * @return array
+     */
+    protected function getConfig(): array
+    {
+        return [
             'debug_mode'     => true,
             'display_errors' => true,
             'log_file'       => '/dev/stdout',
             //'worker_num'     => 4
-        ]);
+        ];
+    }
 
-        $this->server->on('Open', function ($ws, $request) {
-            echo "[ws] client-{$request->fd} is connected" . PHP_EOL;
-            $ws->push($request->fd, 'Hello, welcome!');
-        });
+    /**
+     * @param Server $server
+     * @param [type] $request
+     * @return void
+     */
+    protected function onOpen(Server $server, $request): void
+    {
+        echo "[ws] client-{$request->fd} is connected" . PHP_EOL;
+        $server->push($request->fd, 'Hello, welcome!');
+    }
 
-        $this->server->on('Close', function ($ws, $fd) {
-            echo "[ws] client-{$fd} is closed" . PHP_EOL;
-        });
+    /**
+     * Undocumented function
+     *
+     * @param Server $server
+     * @param [type] $fd
+     * @return void
+     */
+    protected function onClose(Server $server, $fd): void
+    {
+        echo "[ws] client-{$fd} is closed" . PHP_EOL;
 
-        $this->server->on('Message', function ($ws, $frame) {
-            echo "[ws] message received: {$frame->data}" . PHP_EOL;
-        
-            $data = json_decode($frame->data, true);
-            $action = $data['action'] ?: '';
-            $room = $data['room'] ?: '';
-        
-            switch ($action) {
-                case 'join':
-                    if (!isset($this->rooms[$room])) {
-                        $this->rooms[$room] = [];
-                    }
-                    $this->rooms[$room][$frame->fd] = $frame->fd;
-                    $ws->push($frame->fd, "Joined room: {$room}");
-                    break;
-    
-                case 'leave':
-                    if (isset($this->rooms[$room])) {
-                        unset($this->rooms[$room][$frame->fd]);
-                        $ws->push($frame->fd, "Left room: {$room}");
-                    }
-                    break;
-    
-                case 'message':
-                    if (isset($this->rooms[$room]) && isset($this->rooms[$room][$frame->fd])) {
-                        foreach ($this->rooms[$room] as $fd) {
-                            if ($ws->isEstablished($fd)) {
-                                $ws->push($fd, "[{$room}] client-{$frame->fd}: {$data['message']}");
-                            }
-                        }
-                    }
-                    break;
-
-                case 'broadcast':
-                    foreach ($this->server->connections as $fd) {
-                        if ($this->server->isEstablished($fd)) {
-                            $this->server->push($fd, "Broadcast: {$data['message']}");
-                        }
-                    }
-                    break;
-    
-                default:
-                    $ws->push($frame->fd, "Unknown action: {$action}");
-                    break;
+        foreach ($this->rooms as &$room) {
+            if (isset($room[$fd])) {
+                unset($room[$fd]);
             }
-        });
+        }
+    }
 
-        $this->server->start();
+    /**
+     * @param Server $server
+     * @param [type] $frame
+     * @return void
+     */
+    protected function onMessage(Server $server, $frame): void
+    {
+        echo "[ws] message received: {$frame->data}" . PHP_EOL;
+        
+        $data = json_decode($frame->data, true);
+        $message = $data['message'] ?? null;
+        $action = $data['action'] ?? null;
+        $room = $data['room'] ?? null;
+
+        match ($action) {
+            'join'      => $this->joinRoom($server, $frame->fd, $room),
+            'leave'     => $this->leaveRoom($server, $frame->fd, $room),
+            'message'   => $this->sendMessage($server, $frame->fd, $room, $message),
+            'broadcast' => $this->broadcastMessage($server, $frame->fd, $message),
+            default     => $server->push($frame->fd, "Unknown action: {$action}"),
+        };
+    }
+
+    /**
+     * @param Server $server
+     * @param integer $fd
+     * @param string $room
+     * @return void
+     */
+    protected function joinRoom(Server $server, int $fd, ?string $room): void
+    {
+        if ($room === null) {
+            $server->push($fd, 'Room name is required to join a room');
+            return;
+        }
+
+        if (!isset($this->rooms[$room])) {
+            $this->rooms[$room] = [];
+        }
+
+        $this->rooms[$room][$fd] = $fd;
+        $server->push($fd, "Joined room: {$room}");
+    }
+
+    /**
+     * @param Server $server
+     * @param integer $fd
+     * @param string|null $room
+     * @return void
+     */
+    protected function leaveRoom(Server $server, int $fd, ?string $room): void
+    {
+        if ($room === null) {
+            $server->push($fd, 'Room name is required to leave a room');
+            return;
+        }
+
+        if (isset($this->rooms[$room])) {
+            unset($this->rooms[$room][$fd]);
+            $server->push($fd, "Left room: {$room}");
+        }
+    }
+
+    /**
+     * @param Server $server
+     * @param integer $fd
+     * @param string|null $room
+     * @param string|null $message
+     * @return void
+     */
+    protected function sendMessage(Server $server, int $fd, ?string $room, ?string $message): void
+    {
+        if ($room === null) {
+            $server->push($fd, 'Room name is required to send a message');
+            return;
+        }
+
+        if ($message === null) {
+            $server->push($fd, 'Message content is required to send a message');
+            return;
+        }
+
+        if(!isset($this->rooms[$room][$fd])) {
+            $server->push($fd, 'It is require to join the room before sending a message');
+            return;
+        }
+
+        foreach ($this->rooms[$room] as $fdInRoom) {
+            if ($server->isEstablished($fdInRoom)) {
+                $server->push($fdInRoom, "[{$room}] client-{$fd}: {$message}");
+            }
+        }
+    }
+
+    /**
+     * @param Server $server
+     * @param integer $fd
+     * @param string|null $message
+     * @return void
+     */
+    protected function broadcastMessage(Server $server, int $fd, ?string $message): void
+    {
+        if ($message === null) {
+            $server->push($fd, 'Message content is required to broadcast');
+            return;
+        }
+
+        foreach ($server->connections as $fd) {
+            if ($server->isEstablished($fd)) {
+                $server->push($fd, "Broadcast: {$message}");
+            }
+        }
     }
 }
