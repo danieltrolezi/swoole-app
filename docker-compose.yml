@@ -9,9 +9,9 @@ services:
       - '8080:8080'
       - '9090:9090'
     volumes:
-      - .:/app
-      - ./vendor:/app/vendor
-    working_dir: /app
+      - .:/swoole-app
+      - ./vendor:/swoole-app/vendor
+    working_dir: /swoole-app
     networks:
       - bridge
 

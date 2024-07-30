@@ -6,11 +6,21 @@
 <body>
     <h1>Enter Your Message</h1>
     <form id="messageForm">
-        <textarea id="messageInput" rows="5" cols="30" placeholder="Type your message here...">
-            This is the first message
-        </textarea>
+        <select id="roomInput">
+            <option value="room-1">Room 1</option>
+            <option value="room-2">Room 2</option>
+        </select>
+        <button type="button" onclick="joinRoom()">Join</button>
+        <button type="button" onclick="leaveRoom()">Leave</button>
+
         <br>
+
+        <textarea id="messageInput" rows="5" cols="30" placeholder="Type your message here..."></textarea>
+
+        <br>
+        
         <button type="button" onclick="sendMessage()">Submit</button>
+        <button type="button" onclick="broadcastMessage()">Broadcast</button>
     </form>
 
     <script>
@@ -32,16 +42,53 @@
             console.log('Error occurred: ' + evt.data);
         };
 
+        function joinRoom() {
+            websocket.send(JSON.stringify({'action': 'join', 'room': getRoom()}));
+        }
+
+        function leaveRoom() {
+            websocket.send(JSON.stringify({'action': 'leave', 'room': getRoom()}));
+        }
+
         function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const messageText = messageInput.value.trim();
+            messageText = getMessage();
 
             if (messageText !== '') {
-                websocket.send(JSON.stringify({'message': messageText}));
+                websocket.send(JSON.stringify({
+                    'action': 'message',
+                    'room': getRoom(),
+                    'message': messageText
+                }));
+                
                 messageInput.value = '';
             } else {
                 alert('Please enter a message before submitting.');
             }
+        }
+
+        function broadcastMessage() {
+            messageText = getMessage();
+
+            if (messageText !== '') {
+                websocket.send(JSON.stringify({
+                    'action': 'broadcast',
+                    'message': messageText
+                }));
+                
+                messageInput.value = '';
+            } else {
+                alert('Please enter a message before submitting.');
+            }
+        }
+
+        function getRoom() {
+            const roomInput = document.getElementById('roomInput');
+            return roomInput.options[roomInput.selectedIndex].value;
+        }
+
+        function getMessage() {
+            const messageInput = document.getElementById('messageInput');
+            return messageInput.value.trim();
         }
     </script>
 </body>

@@ -28,7 +28,7 @@ RUN docker-php-ext-enable xdebug \
 
 RUN mkdir -p /var/log/supervisor
 
-COPY . /app
+COPY . /swoole-app
 COPY ./docker/supervisord /etc/supervisor/conf.d/
 COPY ./docker/php "${PHP_INI_DIR}/conf.d/"
 
