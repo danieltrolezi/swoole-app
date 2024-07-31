@@ -1,4 +1,4 @@
-import ChatUI from './src/ChatUI.js';
+import Interface from './src/Interface.js';
 
 class Application {
     constructor() {
@@ -8,8 +8,8 @@ class Application {
 
         Application.instance = this;
 
-        this.chatUI = new ChatUI();
-        this.chatUI.init();  
+        this.interface = new Interface();
+        this.interface.init();  
     }
 } 
 
