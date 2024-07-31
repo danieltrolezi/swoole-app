@@ -1,6 +1,6 @@
 import WebSocketClient from './WebSocketClient.js';
 
-class ChatUI {
+class Interface {
     constructor() {
         this.roomInput = document.getElementById('roomInput');
         this.messageInput = document.getElementById('messageInput');
@@ -51,4 +51,4 @@ class ChatUI {
     }
 }
 
-export default ChatUI;
+export default Interface;
