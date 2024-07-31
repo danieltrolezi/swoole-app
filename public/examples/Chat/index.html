@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Example</title>
+</head>
+<body>
+    <h1>Enter Your Message</h1>
+    <form id="messageForm">
+        <select id="roomInput">
+            <option value="room-1">Room 1</option>
+            <option value="room-2">Room 2</option>
+        </select>
+        <button type="button" id="joinButton">Join</button>
+        <button type="button" id="leaveButton">Leave</button>
+
+        <br>
+
+        <textarea id="messageInput" rows="5" cols="30" placeholder="Type your message here..."></textarea>
+
+        <br>
+        
+        <button type="button" id="sendButton">Submit</button>
+        <button type="button" id="broadcastButton">Broadcast</button>
+    </form>
+
+    <script type="module" src="./index.js"></script>
+</body>
+</html>

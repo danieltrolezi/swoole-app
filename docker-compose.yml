@@ -9,9 +9,21 @@ services:
       - '8080:8080'
       - '9090:9090'
     volumes:
-      - .:/app
-      - ./vendor:/app/vendor
-    working_dir: /app
+      - .:/swoole-app
+      - ./vendor:/swoole-app/vendor
+    working_dir: /swoole-app
+    networks:
+      - bridge
+
+  web:
+    image: 'nginx:alpine'
+    ports:
+      - '80:80'
+    volumes:
+      - .:/var/www/swoole-app
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
     networks:
       - bridge
 
