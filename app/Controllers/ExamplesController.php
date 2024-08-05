@@ -5,7 +5,7 @@ namespace App\Controllers;
 use App\AsyncTasks\AsyncTaskExample;
 use Swoole\Http\Server;
 
-class TaskController
+class ExamplesController
 {
     public function __construct(
         private Server $server

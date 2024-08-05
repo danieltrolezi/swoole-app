@@ -2,7 +2,7 @@
 
 namespace App\Servers;
 
-use App\Controllers\TaskController;
+use App\Controllers\ExamplesController;
 use App\AsyncTasks\AsyncTaskInterface;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
@@ -68,7 +68,7 @@ class HttpServer
         }
 
         if ($request->server['request_uri'] == '/examples/async-task') {
-            $controller = new TaskController($this->server);
+            $controller = new ExamplesController($this->server);
             $controller->asyncTask();
             
             $response->end('Ok');
