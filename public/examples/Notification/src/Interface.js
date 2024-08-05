@@ -10,7 +10,7 @@ class Interface {
     }
 
     processLongTask() {
-        const url = 'http://localhost:8080/examples/process-long-task';
+        const url = 'http://localhost:8080/examples/async-task';
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
@@ -19,7 +19,7 @@ class Interface {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
-                    console.log('Message sent successfully!');
+                    console.log('Request sent successfully!');
                     console.log('Response:', xhr.responseText);
                 } else {
                     console.error('Error sending message:', xhr.status);
