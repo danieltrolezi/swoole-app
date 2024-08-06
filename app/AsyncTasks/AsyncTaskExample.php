@@ -3,6 +3,7 @@
 namespace App\AsyncTasks;
 
 use App\Services\NotificationService;
+use Swoole\Coroutine;
 
 class AsyncTaskExample implements AsyncTaskInterface 
 {
@@ -19,7 +20,7 @@ class AsyncTaskExample implements AsyncTaskInterface
      */
     public function process(): void
     {
-        sleep(3);
+        Coroutine::sleep(3);
 
         $notificationService = new NotificationService();
         $notificationService->sendPushNotification(

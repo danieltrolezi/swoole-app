@@ -6,12 +6,19 @@ class Interface {
     }
 
     init() {
-        document.getElementById('processButton').addEventListener('click', () => this.processLongTask());
+        document.getElementById('asyncTaskButton').addEventListener('click', () => this.startAsyncTask());
+        document.getElementById('blockedCoroutinesButton').addEventListener('click', () => this.startBlockedCoroutines());
     }
 
-    processLongTask() {
-        const url = 'http://localhost:8080/examples/async-task';
+    startAsyncTask() {
+        this.call('http://localhost:8080/examples/async-task');
+    }
 
+    startBlockedCoroutines() {
+        this.call('http://localhost:8080/examples/blocked-coroutines');
+    }
+
+    call(url) {
         const xhr = new XMLHttpRequest();
         xhr.open('POST', url, true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

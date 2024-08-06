@@ -2,8 +2,10 @@
 
 namespace App\Servers;
 
-use App\Controllers\ExamplesController;
+use App\Router;
 use App\AsyncTasks\AsyncTaskInterface;
+use App\Exceptions\NotFoundException;
+use Exception;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -11,11 +13,30 @@ use Swoole\Server\Task;
 
 class HttpServer
 {
-    private Server $server;
+    private static ?HttpServer $instance = null;
+    private Router $router;
+    public Server $server;
 
-    public function __construct()
+    private function __construct()
     {
-        $this->startServer();
+    }
+
+    public static function getInstance(): HttpServer
+    {
+        if (self::$instance === null) {
+            self::$instance = new HttpServer();
+            self::$instance->setRouter();   
+            self::$instance->startServer();
+        }
+        
+        return self::$instance;
+    }
+
+    private function setRouter()
+    {
+        $this->router = new Router(
+            require __DIR__ . '/../../config/routes.php'
+        );
     }
 
     /**
@@ -58,27 +79,59 @@ class HttpServer
      */
     protected function onRequest(Request $request, Response $response)
     {
-        $response->header("Access-Control-Allow-Origin", "http://localhost");
-        $response->header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        $response->header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
-
-        if ($request->server['request_uri'] == '/favicon.ico') {
+        $path = $request->server['request_uri'];
+        $response = $this->setAccessControlHeaders($response);
+        
+        if ($path == '/favicon.ico') {
             $response->end();
             return;
         }
 
-        if ($request->server['request_uri'] == '/examples/async-task') {
-            $controller = new ExamplesController($this->server);
-            $controller->asyncTask();
-            
-            $response->end('Ok');
-            return;
+        try {
+            $message = $this->router->dispatch($path);
+            $status = 200;
+        } catch (NotFoundException $e) {
+            $message = $e->getMessage();
+            $status = 404;
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            $status = 500;
         }
 
-        $response->header('Content-Type', 'text/html; charset=utf-8');
-        $response->end('<h1>Hello Swoole. #' . rand(1000, 9999) . '</h1>');
+        $this->responseJson($response, ['message' => $message], $status);
     }
 
+    /**
+     * @param Response $response
+     * @return Response
+     */
+    private function setAccessControlHeaders(Response $response): Response
+    {
+        $response->header("Access-Control-Allow-Origin", "http://localhost");
+        $response->header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        $response->header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+
+        return $response;
+    }
+
+    /**
+     * @param Response $response
+     * @param array $result
+     * @param integer $status
+     * @return void
+     */
+    private function responseJson(Response $response, array $result, int $status = 200)
+    {
+        $response->header("Content-Type", "application/json");
+        $response->status($status);
+        $response->end(json_encode($result));
+    }
+
+    /**
+     * @param Server $server
+     * @param Task $task
+     * @return void
+     */
     protected function onTask(Server $server, Task $task)
     {
         echo "[http] new AsyncTask[id={$task->id}, name={$task->data->name()}]" . PHP_EOL;
