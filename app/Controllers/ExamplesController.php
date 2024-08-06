@@ -3,10 +3,14 @@
 namespace App\Controllers;
 
 use App\AsyncTasks\AsyncTaskExample;
+use App\Services\NotificationService;
 use Swoole\Coroutine;
 
 class ExamplesController extends Controller
 {
+    /**
+     * @return string
+     */
     public function asyncTask(): string
     {
         // Your logic
@@ -17,7 +21,10 @@ class ExamplesController extends Controller
         return 'Ok';
     }
 
-    public function blockedCoroutines(): array
+    /**
+     * @return array
+     */
+    public function blockingCoroutines(): array
     {
         $result = [];
 
@@ -37,5 +44,30 @@ class ExamplesController extends Controller
         ]);
 
         return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function nonBlockingCoroutines(): string
+    {
+        $notificationService = new NotificationService();
+
+        go(function() use(&$notificationService) {
+            Coroutine::sleep(3);
+            $notificationService->sendPushNotification('coroutine A');
+        });
+
+        go(function() use(&$notificationService) {
+            Coroutine::sleep(1);
+            $notificationService->sendPushNotification('coroutine B');
+        });
+
+        go(function() use(&$notificationService) {
+            Coroutine::sleep(2);
+            $notificationService->sendPushNotification('coroutine C');
+        });
+
+        return 'Ok';
     }
 }

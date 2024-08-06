@@ -7,15 +7,20 @@ class Interface {
 
     init() {
         document.getElementById('asyncTaskButton').addEventListener('click', () => this.startAsyncTask());
-        document.getElementById('blockedCoroutinesButton').addEventListener('click', () => this.startBlockedCoroutines());
+        document.getElementById('blockingCoroutinesButton').addEventListener('click', () => this.startBlockingCoroutines());
+        document.getElementById('nonBlockingCoroutinesButton').addEventListener('click', () => this.startNonBlockingCoroutines());
     }
 
     startAsyncTask() {
         this.call('http://localhost:8080/examples/async-task');
     }
 
-    startBlockedCoroutines() {
-        this.call('http://localhost:8080/examples/blocked-coroutines');
+    startBlockingCoroutines() {
+        this.call('http://localhost:8080/examples/blocking-coroutines');
+    }
+
+    startNonBlockingCoroutines() {
+        this.call('http://localhost:8080/examples/non-blocking-coroutines');
     }
 
     call(url) {

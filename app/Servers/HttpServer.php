@@ -5,7 +5,6 @@ namespace App\Servers;
 use App\Router;
 use App\AsyncTasks\AsyncTaskInterface;
 use App\Exceptions\NotFoundException;
-use Exception;
 use Swoole\Http\Server;
 use Swoole\Http\Request;
 use Swoole\Http\Response;
@@ -93,9 +92,6 @@ class HttpServer
         } catch (NotFoundException $e) {
             $message = $e->getMessage();
             $status = 404;
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-            $status = 500;
         }
 
         $this->responseJson($response, ['message' => $message], $status);
