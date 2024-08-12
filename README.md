@@ -2,7 +2,7 @@
 
 Welcome to the base [Swoole](https://github.com/swoole/swoole-src) application repository. 
 
-This repository contains a basic application built using the Swoole extension in PHP 8.3. It includes an HttpServer for handling HTTP requests and a WebSocketServer for handling WebSocket connections. The application demonstrates how to implement a simple router, manage routes, and handle WebSocket connections efficiently.
+This repository contains a basic application built using the Swoole extension in PHP 8.3. It includes an HttpServer for handling HTTP requests and a WebSocketServer for handling WebSocket connections. The application demonstrates how to implement a simple router, manage routes, and handle WebSocket connections, Coroutines and Sync Tasks efficiently.
 
 ## Getting Started
 
