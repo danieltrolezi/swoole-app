@@ -1,0 +1,11 @@
+.warning {
+    background-color: #ffeeab;
+    color: #333;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+    border: 1px solid #e0a800;
+    font-size: 18px;
+}

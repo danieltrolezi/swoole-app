@@ -13,9 +13,8 @@ class ExamplesController extends Controller
      */
     public function asyncTask(): string
     {
-        // Your logic
+        // [Logic goes here]
 
-        // Dispatch async task
         $this->application->server->task(new AsyncTaskExample());
 
         return 'Ok';

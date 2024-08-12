@@ -32,7 +32,7 @@ Follow the steps below to set up and run the application.
 
 | Application | Type     | Address               |
 |-------------|----------|-----------------------|
-| HTML        | Nginx    | [http://localhost:80](http://localhost:80)     |
+| Interface   | Nginx/JS | [http://localhost:80](http://localhost:80)     |
 | API         | Swoole   | [http://localhost:8080](http://localhost:8080) |
 | WebSocket   | Swoole   | [http://localhost:9090](http://localhost:9090) |
 

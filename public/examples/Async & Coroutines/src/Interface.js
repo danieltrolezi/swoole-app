@@ -3,6 +3,7 @@ import WebSocketClient from './WebSocketClient.js';
 class Interface {
     constructor() {
         this.websocketClient = new WebSocketClient('ws://localhost:9090');
+        this.apiUrl = 'http://localhost:8080';
     }
 
     init() {
@@ -12,20 +13,20 @@ class Interface {
     }
 
     startAsyncTask() {
-        this.call('http://localhost:8080/examples/async-task');
+        this.call('/examples/async-task');
     }
 
     startBlockingCoroutines() {
-        this.call('http://localhost:8080/examples/blocking-coroutines');
+        this.call('/examples/blocking-coroutines');
     }
 
     startNonBlockingCoroutines() {
-        this.call('http://localhost:8080/examples/non-blocking-coroutines');
+        this.call('/examples/non-blocking-coroutines');
     }
 
-    call(url) {
+    call(path) {
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', url, true);
+        xhr.open('POST', this.apiUrl + path, true);
         xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         xhr.onreadystatechange = function () {

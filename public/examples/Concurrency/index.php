@@ -3,6 +3,9 @@
 /**
  * Simple Concurrency/Coroutine example in a script
  * Coroutine\run is used to initialize Coroutine Schedule/Context
+ * and should be the start point of the application.
+ * 
+ * More info: https://wiki.swoole.com/en/#/start/coroutine
  * 
  * Execute by running "php main.php" on terminal
  */
@@ -26,5 +29,8 @@ Coroutine\run(function() {
         Coroutine::sleep(2);
         echo 'coroutine C' . PHP_EOL;
     });
+
+    echo 'First line.' . PHP_EOL;
 });
 
+echo 'Last line.' . PHP_EOL;
