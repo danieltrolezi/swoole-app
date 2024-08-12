@@ -10,6 +10,8 @@ class Interface {
         document.getElementById('asyncTaskButton').addEventListener('click', () => this.startAsyncTask());
         document.getElementById('blockingCoroutinesButton').addEventListener('click', () => this.startBlockingCoroutines());
         document.getElementById('nonBlockingCoroutinesButton').addEventListener('click', () => this.startNonBlockingCoroutines());
+        document.getElementById('channelCoroutines').addEventListener('click', () => this.startChannelCoroutines());
+        
     }
 
     startAsyncTask() {
@@ -22,6 +24,10 @@ class Interface {
 
     startNonBlockingCoroutines() {
         this.call('/examples/non-blocking-coroutines');
+    }
+
+    startChannelCoroutines() {
+        this.call('/examples/channel-coroutines');
     }
 
     call(path) {

@@ -7,7 +7,9 @@
  * 
  * More info: https://wiki.swoole.com/en/#/start/coroutine
  * 
- * Execute by running "php main.php" on terminal
+ * Execute by running on terminal: 
+ * $ docker exec -it swoole-app-app-1 bash
+ * $ php <PATH_TO_FILE>/index.php
  */
 
 use Swoole\Coroutine;
