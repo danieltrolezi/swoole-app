@@ -57,7 +57,7 @@ class ExamplesController extends Controller
          * if the Coroutines tries to call NotificationService::sendPushNotification
          * on the same instance, on the same time, it will throw an execption.
          * 
-         * But for for teaching purposes it uses the same instance.
+         * But for teaching purposes it uses the same instance.
          */
         $notificationService = new NotificationService();
 
