@@ -1,0 +1,19 @@
+{
+    "name": "",
+    "jobs": [
+        {
+            "name": "Lint",
+            "commands": ["make lint"]
+        },
+        {
+            "name": "Build",
+            "commands": ["make build"],
+            "depends_on": ["Lint"]
+        },
+        {
+            "name": "Test",
+            "commands": ["make test"],
+            "depends_on": ["Build"]
+        }
+    ]
+}

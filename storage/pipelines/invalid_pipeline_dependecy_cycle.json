@@ -1,0 +1,20 @@
+{
+    "name": "Invalid pipeline example",
+    "jobs": [
+        {
+            "name": "A",
+            "commands": ["echo hello"],
+            "depends_on": ["C"]
+        },
+        {
+            "name": "B",
+            "commands": ["echo hello"],
+            "depends_on": ["A"]
+        },
+        {
+            "name": "C",
+            "commands": ["echo hello"],
+            "depends_on": ["B"]
+        }
+    ]
+}

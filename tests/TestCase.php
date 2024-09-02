@@ -15,4 +15,9 @@ class TestCase extends BaseTestCase
         parent::__construct($name, $data, $dataName);
         $this->faker = Factory::create();
     }
+
+    public function storagePath(string $filePath): string
+    {
+        return __DIR__ . '/../storage/' . $filePath;
+    }
 }
