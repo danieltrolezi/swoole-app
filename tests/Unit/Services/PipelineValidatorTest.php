@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit\Services\Semaphore;
+namespace Tests\Unit\Services;
 
-use App\Services\Semaphore\PipelineValidator;
+use App\Services\PipelineValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 

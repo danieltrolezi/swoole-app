@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Semaphore;
+namespace App\Services;
 
 use Exception;
 

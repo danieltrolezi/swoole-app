@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y \
         libbrotli-dev \
         libc-ares-dev \
         libssl-dev \
+        libyaml-dev \
         apt-utils \
         curl \
         wget \
@@ -18,13 +19,15 @@ RUN docker-php-ext-configure pcntl --enable-pcntl
 RUN docker-php-ext-install pdo pdo_mysql pcntl
 
 RUN pecl install xdebug \
-        redis
+        redis \
+        yaml
 
 RUN printf "\n" | pecl install swoole
 
 RUN docker-php-ext-enable xdebug \
         redis \
-        swoole
+        swoole \
+        yaml
 
 RUN mkdir -p /var/log/supervisor
 
