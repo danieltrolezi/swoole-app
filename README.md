@@ -1,4 +1,4 @@
-# Base Swoole Application & Examples
+## :rocket: Base Swoole Application
 
 Welcome to the base [Swoole](https://github.com/swoole/swoole-src) application repository. 
 
@@ -6,15 +6,15 @@ This repository contains a basic application built using the Swoole extension in
 
 The application demonstrates how to implement a simple router, manage routes, and handle WebSocket connections and Coroutines efficiently.
 
-## Getting Started
+### Getting Started
 
 Follow the steps below to set up and run the application.
 
-### Requirements
+#### Requirements
 
 - Docker: [Setting Up Docker on Ubuntu](https://github.com/danieltrolezi/laravel-app/wiki/01.-Setting-Up-Docker-on-Ubuntu)
 
-### Running the Environment
+#### Running the Environment
 
 1. **Build Images:**
 ```sh
@@ -33,7 +33,7 @@ http://localhost/examples
 
 Explore the examples to see how to leverage Swoole for high-performance network programming. 
 
-### Servers
+#### Servers
 
 | Application | Type     | Address                                        |
 |-------------|----------|------------------------------------------------|
